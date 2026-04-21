@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이차전지 기초화학 — 개념 & 역사</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --card: #22263a;
+    --border: #2e3250;
+    --accent: #4f8ef7;
+    --accent2: #7c5cbf;
+    --accent3: #2db8a0;
+    --accent4: #e07b39;
+    --text: #e8eaf0;
+    --muted: #8890a8;
+    --tag-bg: #1e2540;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ─── Hero ─── */
+  .hero {
+    background: linear-gradient(135deg, #0d1b3e 0%, #1a0d3a 50%, #0d2b2a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(79,142,247,.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, rgba(124,92,191,.12) 0%, transparent 60%);
+  }
+  .hero h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -.02em; position: relative; }
+  .hero h1 span { color: var(--accent); }
+  .hero p { margin-top: 10px; color: var(--muted); font-size: .95rem; position: relative; }
+  .badge {
+    display: inline-block; margin-top: 16px;
+    padding: 4px 14px; border-radius: 20px;
+    background: rgba(79,142,247,.15); border: 1px solid rgba(79,142,247,.3);
+    font-size: .78rem; color: var(--accent); position: relative;
+  }
+
+  /* ─── Nav Tabs ─── */
+  .nav {
+    display: flex; gap: 4px;
+    padding: 16px 24px 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    overflow-x: auto;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav button {
+    padding: 10px 22px; border: none; cursor: pointer;
+    background: transparent; color: var(--muted);
+    font-size: .88rem; font-weight: 600; border-radius: 8px 8px 0 0;
+    border-bottom: 3px solid transparent;
+    transition: all .2s; white-space: nowrap;
+  }
+  .nav button:hover { color: var(--text); background: rgba(255,255,255,.04); }
+  .nav button.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(79,142,247,.08); }
+
+  /* ─── Sections ─── */
+  .section { display: none; padding: 32px 24px 64px; max-width: 960px; margin: 0 auto; }
+  .section.active { display: block; }
+  .section-title {
+    font-size: 1.4rem; font-weight: 700; margin-bottom: 6px;
+    color: var(--text);
+  }
+  .section-sub { color: var(--muted); font-size: .88rem; margin-bottom: 28px; }
+
+  /* ─── Cards ─── */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px;
+    transition: transform .15s, border-color .15s;
+  }
+  .card:hover { transform: translateY(-2px); border-color: var(--accent2); }
+  .card-icon { font-size: 1.8rem; margin-bottom: 10px; }
+  .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+  .card p { font-size: .84rem; color: var(--muted); line-height: 1.7; }
+  .card .formula {
+    margin-top: 10px; padding: 8px 12px;
+    background: var(--tag-bg); border-radius: 8px;
+    font-family: monospace; font-size: .82rem; color: var(--accent3);
+    border-left: 3px solid var(--accent3);
+  }
+  .tag {
+    display: inline-block; padding: 2px 9px; border-radius: 20px;
+    font-size: .72rem; font-weight: 600; margin-top: 8px; margin-right: 4px;
+  }
+  .tag-blue { background: rgba(79,142,247,.15); color: var(--accent); border: 1px solid rgba(79,142,247,.25); }
+  .tag-green { background: rgba(45,184,160,.15); color: var(--accent3); border: 1px solid rgba(45,184,160,.25); }
+  .tag-purple { background: rgba(124,92,191,.15); color: #a07fe0; border: 1px solid rgba(124,92,191,.25); }
+  .tag-orange { background: rgba(224,123,57,.15); color: var(--accent4); border: 1px solid rgba(224,123,57,.25); }
+
+  /* ─── Comparison Table ─── */
+  .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 28px; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  th {
+    background: var(--card); padding: 12px 16px; text-align: left;
+    font-size: .8rem; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .05em;
+  }
+  td { padding: 12px 16px; border-top: 1px solid var(--border); }
+  tr:hover td { background: rgba(255,255,255,.02); }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+  .dot-blue { background: var(--accent); }
+  .dot-green { background: var(--accent3); }
+  .dot-purple { background: #a07fe0; }
+  .dot-orange { background: var(--accent4); }
+  .dot-red { background: #e05c5c; }
+
+  /* ─── Timeline ─── */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 10px; top: 0; bottom: 0;
+    width: 2px; background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3));
+    border-radius: 2px;
+  }
+  .tl-item { position: relative; margin-bottom: 28px; }
+  .tl-item::before {
+    content: ''; position: absolute; left: -26px; top: 4px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+    box-shadow: 0 0 0 3px rgba(79,142,247,.3);
+  }
+  .tl-item.key::before { background: var(--accent4); box-shadow: 0 0 0 3px rgba(224,123,57,.3); width: 16px; height: 16px; left: -28px; }
+  .tl-item.nobel::before { background: #f5c518; box-shadow: 0 0 0 3px rgba(245,197,24,.3); width: 16px; height: 16px; left: -28px; }
+  .tl-year { font-size: .75rem; font-weight: 800; color: var(--muted); letter-spacing: .1em; margin-bottom: 4px; }
+  .tl-title { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+  .tl-desc { font-size: .84rem; color: var(--muted); line-height: 1.6; }
+  .tl-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; }
+
+  /* ─── Law Cards ─── */
+  .law-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .law-card {
+    border-radius: 12px; padding: 18px; border: 1px solid var(--border);
+    background: var(--card);
+  }
+  .law-num { font-size: 2rem; font-weight: 900; opacity: .15; float: right; line-height: 1; }
+  .law-card h4 { font-size: .85rem; font-weight: 700; margin-bottom: 6px; }
+  .law-card p { font-size: .8rem; color: var(--muted); }
+
+  /* ─── Reaction Box ─── */
+  .rxn-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin-bottom: 16px;
+  }
+  .rxn-box h4 { font-size: .9rem; font-weight: 700; margin-bottom: 12px; }
+  .rxn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; align-items: center; }
+  .rxn-half {
+    flex: 1; min-width: 200px; padding: 10px 14px; border-radius: 8px;
+    font-family: monospace; font-size: .82rem;
+  }
+  .rxn-half.ox { background: rgba(224,123,57,.1); border: 1px solid rgba(224,123,57,.25); color: var(--accent4); }
+  .rxn-half.re { background: rgba(45,184,160,.1); border: 1px solid rgba(45,184,160,.25); color: var(--accent3); }
+  .rxn-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; opacity: .7; }
+
+  /* ─── Accordion ─── */
+  .accordion { margin-bottom: 10px; }
+  .acc-head {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px; cursor: pointer;
+    font-weight: 600; font-size: .9rem; transition: background .15s;
+    user-select: none;
+  }
+  .acc-head:hover { background: #2a2f47; }
+  .acc-arrow { transition: transform .2s; color: var(--muted); font-size: .8rem; }
+  .acc-body { display: none; padding: 16px 18px; font-size: .85rem; color: var(--muted); line-height: 1.7; background: var(--tag-bg); border: 1px solid var(--border); border-top: none; border-radius: 0 0 10px 10px; }
+  .acc-body.open { display: block; }
+  .acc-head.open .acc-arrow { transform: rotate(180deg); }
+
+  /* ─── Section divider ─── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  .sub-heading { font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .sub-heading::before { content: ''; display: block; width: 4px; height: 18px; border-radius: 2px; background: var(--accent); }
+
+  /* ─── Gibbs / Energy visual ─── */
+  .gibbs-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
+  .gibbs-cell {
+    border-radius: 10px; padding: 16px; text-align: center; border: 1px solid var(--border);
+  }
+  .gibbs-cell .sign { font-size: 1.6rem; font-weight: 900; margin-bottom: 4px; }
+  .gibbs-cell .label { font-size: .75rem; color: var(--muted); }
+  .gibbs-cell.neg { background: rgba(45,184,160,.08); }
+  .gibbs-cell.zero { background: rgba(79,142,247,.08); }
+  .gibbs-cell.pos { background: rgba(224,123,57,.08); }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.5rem; }
+    .grid { grid-template-columns: 1fr; }
+    .gibbs-row { grid-template-columns: 1fr; }
+    .law-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>이차전지 <span>기초화학</span></h1>
+  <p>이차전지 혁신융합대학 사업단 · 1~7주차 강의 통합 정리</p>
+  <span class="badge">Secondary Battery · Basic Chemistry</span>
+</div>
+
+<!-- Nav -->
+<div class="nav" id="nav">
+  <button class="active" onclick="show('개념',this)">📚 핵심 개념</button>
+  <button onclick="show('분류',this)">🔋 전지 분류</button>
+  <button onclick="show('화학',this)">⚗️ 산화·환원</button>
+  <button onclick="show('에너지',this)">⚡ 에너지·열역학</button>
+  <button onclick="show('역사',this)">📅 역사 연대기</button>
+  <button onclick="show('비교',this)">📊 이차전지 비교</button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 1: 핵심 개념
+════════════════════════════════════════════════ -->
+<div id="개념" class="section active">
+  <div class="section-title">핵심 개념 총정리</div>
+  <div class="section-sub">이차전지를 이해하기 위한 기본 구조와 원리</div>
+
+  <div class="sub-heading">전지의 기본 구조</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">⊕</div>
+      <h3>양극 (Cathode)</h3>
+      <p>방전 시 환원 반응이 일어나는 전극. 높은 전기화학 전위를 가짐.<br>현재 주로 리튬전이금속산화물(LCO, NCM 등) 사용.</p>
+      <span class="tag tag-blue">환원전극</span>
+      <span class="tag tag-green">LiCoO₂ 기반</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">⊖</div>
+      <h3>음극 (Anode)</h3>
+      <p>방전 시 산화 반응이 일어나는 전극. 낮은 전기화학 전위를 가짐.<br>상용 LIB에서는 흑연(Graphite) 사용.</p>
+      <span class="tag tag-orange">산화전극</span>
+      <span class="tag tag-purple">흑연(C₆)</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">💧</div>
+      <h3>전해질 (Electrolyte)</h3>
+      <p>이온의 이동 통로 역할. 양극과 음극 사이에서 리튬 이온(Li⁺)을 전달함. 전자는 통과하지 못함.</p>
+      <span class="tag tag-blue">이온 전도체</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔲</div>
+      <h3>분리막 (Separator)</h3>
+      <p>양극과 음극의 물리적 접촉을 차단하면서도 이온은 통과시키는 다공성 막. 전해질을 함침하여 사용.</p>
+      <span class="tag tag-green">다공성 고분자막</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="sub-heading">전압 · 용량 · 에너지</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3>전압 (Voltage, V)</h3>
+      <p>양극 전위 − 음극 전위의 차이. 두 전극의 전기화학 전위 차이로 결정됨.</p>
+      <div class="formula">V = E(양극) − E(음극)</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔋</div>
+      <h3>용량 (Capacity, Q)</h3>
+      <p>저장된 전하의 양. 단위는 C 또는 Ah.<br>1 Ah = 1A의 전류로 1시간 방전 가능한 용량 (3600 C)</p>
+      <div class="formula">1 Ah = 3600 C</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💡</div>
+      <h3>에너지 (Energy, E)</h3>
+      <p>일을 할 수 있는 능력. 단위는 J 또는 Wh.<br>18650 셀 (3.0Ah / 3.6V) = 10.8 Wh</p>
+      <div class="formula">E = V × Q (Wh)</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📐</div>
+      <h3>에너지 밀도</h3>
+      <p>부피당(Wh/L) 또는 질량당(Wh/kg) 에너지의 양. LIB 현재 목표: Egrav &gt; 400 Wh/kg</p>
+      <div class="formula">18650: ~260 Wh/kg, ~730 Wh/L</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="sub-heading">인터칼레이션 (Intercalation)</div>
+  <div class="rxn-box">
+    <h4>리튬이온전지 구동 원리 — 흔들의자(Rocking Chair)형</h4>
+    <div class="rxn-row">
+      <div class="rxn-half ox">
+        <div class="rxn-label">방전 · 음극 (산화)</div>
+        LiₓC(s) → C(s) + xLi⁺(aq) + xe⁻
+      </div>
+      <div class="rxn-half re">
+        <div class="rxn-label">방전 · 양극 (환원)</div>
+        Li₁₋ₓCoO₂ + xLi⁺ + xe⁻ → LiCoO₂(s)
+      </div>
+    </div>
+    <p style="font-size:.82rem;color:var(--muted);margin-top:8px;">
+      Li⁺은 전해질을 통해, 전자(e⁻)는 외부 도선을 통해 이동. 충전 시 역반응.<br>
+      전극 소재 구조 파괴 없이 정반응·역반응 반복 → 장수명의 핵심.
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2: 전지 분류
+════════════════════════════════════════════════ -->
+<div id="분류" class="section">
+  <div class="section-title">전지의 분류 체계</div>
+  <div class="section-sub">물리전지 vs 화학전지 / 일차전지 vs 이차전지</div>
+
+  <div class="sub-heading">전지 분류 전체 트리</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🌞</div>
+      <h3>물리전지</h3>
+      <p>물리 반응으로 전기를 생성.<br>
+        <b>태양전지</b>: 빛 → 전기<br>
+        <b>열전지</b>: 열 → 전기<br>
+        <b>원자력전지</b>: 핵분열 → 전기
+      </p>
+      <span class="tag tag-purple">비화학적</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚗️</div>
+      <h3>화학전지</h3>
+      <p>화학 반응으로 전기를 생성.<br>
+        <b>일차전지</b>: 충전 불가 (비가역)<br>
+        <b>이차전지</b>: 충전 가능 (가역)<br>
+        <b>연료전지</b>: 연속 공급 연료
+      </p>
+      <span class="tag tag-blue">산화·환원 반응</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔌</div>
+      <h3>건전지 vs 습전지</h3>
+      <p><b>건전지(Dry Cell)</b>: 전해액에 젤라틴·전분 첨가, 페이스트화.<br>
+        <b>습전지(Wet Cell)</b>: 전해액이 유동 상태로 과잉 포함.</p>
+      <span class="tag tag-orange">구조 차이</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">♻️</div>
+      <h3>일차 vs 이차전지</h3>
+      <p><b>일차전지</b>: 비가역 반응, 한 번만 방전<br>
+        예) 알칼리, 망간, 수은, 리튬 일차전지<br>
+        <b>이차전지</b>: 가역 반응, 반복 충·방전<br>
+        예) 납축전지, NiCd, Ni-MH, LIB</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="sub-heading">대표 일차전지</div>
+  <div class="accordion">
+    <div class="acc-head" onclick="toggle(this)">
+      아연-탄소 전지 (건전지) — 대표적 1차전지, 약 1.5V
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      양극: 탄소막대(집전체) + 이산화망간(MnO₂)<br>
+      음극: 아연(Zn)<br><br>
+      산화 전극: Zn(s) → Zn²⁺(aq) + 2e⁻<br>
+      환원 전극: 2MnO₂ + 2NH₄⁺ + 2e⁻ → Mn₂O₃ + 2NH₃ + H₂O<br><br>
+      특징: 매우 저렴, 모양·크기 다양. 시간이 지남에 따라 전압 감소하는 단점.
+    </div>
+  </div>
+  <div class="accordion">
+    <div class="acc-head" onclick="toggle(this)">
+      알칼리 전지 — 약 1.5V, 장수명
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      산화 전극(음극): Zn(s) + 2OH⁻ → ZnO(s) + H₂O + 2e⁻<br>
+      환원 전극(양극): MnO₂ + H₂O + 2e⁻ → Mn₂O₃ + 2OH⁻<br>
+      전체 반응 ΔG = −275.9 kJ/mol, E = +1.43 V<br><br>
+      방전 과정은 자발적 반응(ΔG &lt; 0), 갈바닉 셀 원리로 작동.
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="sub-heading">최초의 전지 — 볼타전지 (1800)</div>
+  <div class="rxn-box">
+    <h4>볼타전지 (Voltaic Cell / Galvanic Cell)</h4>
+    <div class="rxn-row">
+      <div class="rxn-half ox">
+        <div class="rxn-label">음극 · 산화</div>
+        Zn(s) → Zn²⁺(aq) + 2e⁻
+      </div>
+      <div class="rxn-half re">
+        <div class="rxn-label">양극 · 환원</div>
+        2H⁺(aq) + 2e⁻ → H₂(g)
+      </div>
+    </div>
+    <p style="font-size:.82rem;color:var(--muted);margin-top:8px;">
+      양극: 구리(Cu) / 음극: 아연(Zn) / 전해질: 묽은 황산(H₂SO₄)<br>
+      금속이 이온과 전자로 분리될 때 고유 전압으로 전류 흐름. 볼트(V) 단위가 볼타 이름에서 유래.
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 3: 산화·환원
+════════════════════════════════════════════════ -->
+<div id="화학" class="section">
+  <div class="section-title">산화·환원 반응 (Redox Reaction)</div>
+  <div class="section-sub">이차전지의 핵심 화학 반응 원리</div>
+
+  <div class="sub-heading">기본 정의</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🔴</div>
+      <h3>산화 (Oxidation)</h3>
+      <p>전자를 <b>잃는</b> 반응.<br>산화수 <b>증가</b>.<br>산화제는 상대를 산화시키고 자신은 환원됨.</p>
+      <div class="formula">Zn → Zn²⁺ + 2e⁻</div>
+      <span class="tag tag-orange">전자 방출</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔵</div>
+      <h3>환원 (Reduction)</h3>
+      <p>전자를 <b>얻는</b> 반응.<br>산화수 <b>감소</b>.<br>환원제는 상대를 환원시키고 자신은 산화됨.</p>
+      <div class="formula">Cu²⁺ + 2e⁻ → Cu</div>
+      <span class="tag tag-green">전자 획득</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔢</div>
+      <h3>산화수 (Oxidation Number)</h3>
+      <p>전자가 완전히 이전될 때 원자가 가질 것으로 예상되는 전하.<br>산화수 변화 확인 = 산화-환원 반응 확인.</p>
+      <div class="formula">감소 = 환원 / 증가 = 산화</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚖️</div>
+      <h3>산화-환원 동시 발생</h3>
+      <p>산화와 환원은 항상 동시에 일어남.<br>한쪽이 전자를 잃으면, 반드시 다른 쪽이 그 전자를 받음.</p>
+      <div class="formula">잃은 전자 = 얻은 전자</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="sub-heading">전기화학 전지의 두 종류</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🔋</div>
+      <h3>갈바닉 셀 (Galvanic Cell)</h3>
+      <p>자발적 전기화학 반응을 통해 전기에너지를 발생시키는 장치.<br>
+        ΔG &lt; 0 → E &gt; 0<br>
+        모든 일반 전지(방전)가 이 원리.</p>
+      <span class="tag tag-green">자발 반응 · 방전</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔌</div>
+      <h3>전해 셀 (Electrolytic Cell)</h3>
+      <p>외부 전기에너지를 공급받아 비자발적 반응을 일으키는 장치.<br>
+        ΔG &gt; 0 → 외부 에너지 필요<br>
+        이차전지 충전, 전기도금에 활용.</p>
+      <span class="tag tag-orange">비자발 반응 · 충전</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="sub-heading">표준 전극 전위 & 기전력(EMF)</div>
+  <div class="rxn-box">
+    <h4>표준 전지 전위 계산</h4>
+    <div class="rxn-row">
+      <div class="rxn-half re">
+        <div class="rxn-label">환원 전극 (양극)</div>
+        Cu²⁺ + 2e⁻ → Cu &nbsp;&nbsp; E° = +0.34 V
+      </div>
+      <div class="rxn-half ox">
+        <div class="rxn-label">산화 전극 (음극)</div>
+        Zn → Zn²⁺ + 2e⁻ &nbsp;&nbsp; E° = −(−0.76) V
+      </div>
+    </div>
+    <p style="font-size:.82rem;color:var(--accent);margin-top:10px;font-family:monospace;">
+      E°전지 = E°(환원전극) − E°(산화전극) = 0.34 − (−0.76) = 1.10 V
+    </p>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:6px;">
+      표준 수소 전극(SHE): 2H⁺ + 2e⁻ → H₂ 를 0 V 기준으로 설정.<br>
+      E°전지 &gt; 0 → 자발적 반응 (볼타전지), E°전지 &lt; 0 → 비자발 (전해전지)
+    </p>
+  </div>
+
+  <hr class="divider">
+  <div class="sub-heading">LIB에서 산화·환원 정리</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>상태</th><th>음극 (흑연)</th><th>양극 (LCO)</th><th>전자 흐름</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag-blue">방전</span></td>
+          <td>LiₓC → C + xLi⁺ + xe⁻ <b>(산화)</b></td>
+          <td>Li₁₋ₓCoO₂ + xLi⁺ + xe⁻ → LiCoO₂ <b>(환원)</b></td>
+          <td>음극 → 외부 → 양극</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-orange">충전</span></td>
+          <td>C + xLi⁺ + xe⁻ → LiₓC <b>(환원)</b></td>
+          <td>LiCoO₂ → Li₁₋ₓCoO₂ + xLi⁺ + xe⁻ <b>(산화)</b></td>
+          <td>양극 → 외부 → 음극</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 4: 에너지·열역학
+════════════════════════════════════════════════ -->
+<div id="에너지" class="section">
+  <div class="section-title">에너지 & 열역학</div>
+  <div class="section-sub">이차전지에서 화학에너지가 왜 중요한가</div>
+
+  <div class="sub-heading">에너지 변환 경로</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🔥</div>
+      <h3>내연기관</h3>
+      <p>화학 에너지 → 열 에너지 → 전기 에너지<br>에너지 손실 多. 효율 낮음.</p>
+      <span class="tag tag-orange">2단계 변환</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">⛽</div>
+      <h3>연료전지</h3>
+      <p>화학 에너지 → 전기 에너지<br>H₂ + ½O₂ → H₂O, E° = 1.23V</p>
+      <span class="tag tag-green">직접 변환</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔋</div>
+      <h3>이차전지</h3>
+      <p>화학 에너지 ↔ 전기 에너지<br>충전·방전 양방향. 에너지 저장 가능.</p>
+      <span class="tag tag-blue">양방향 변환</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="sub-heading">열역학 법칙</div>
+  <div class="law-grid">
+    <div class="law-card">
+      <div class="law-num">0</div>
+      <h4>열 평형의 법칙</h4>
+      <p>서로 다른 온도의 물체를 접촉하면 충분한 시간 후 온도가 동일해짐.</p>
+    </div>
+    <div class="law-card">
+      <div class="law-num">1</div>
+      <h4>에너지 보존</h4>
+      <p>에너지는 생성·소멸되지 않고 형태만 변환됨.<br><code>ΔU = Q − W</code></p>
+    </div>
+    <div class="law-card">
+      <div class="law-num">2</div>
+      <h4>엔트로피 증가</h4>
+      <p>고립계에서 자발적 변화가 일어나면 엔트로피(무질서도)는 항상 증가.</p>
+    </div>
+    <div class="law-card">
+      <div class="law-num">3</div>
+      <h4>절대 영도</h4>
+      <p>절대 0 K에서 계의 엔트로피는 0이 됨. ΔS → 0 as T → 0 K.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="sub-heading">깁스 자유 에너지 (Gibbs Free Energy)</div>
+  <div class="gibbs-row">
+    <div class="gibbs-cell neg">
+      <div class="sign" style="color:var(--accent3);">ΔG &lt; 0</div>
+      <div class="label">자발적 반응<br>(방전, 갈바닉셀)</div>
+    </div>
+    <div class="gibbs-cell zero">
+      <div class="sign" style="color:var(--accent);">ΔG = 0</div>
+      <div class="label">평형 상태<br>(E = 0)</div>
+    </div>
+    <div class="gibbs-cell pos">
+      <div class="sign" style="color:var(--accent4);">ΔG &gt; 0</div>
+      <div class="label">비자발적 반응<br>(충전, 전해셀)</div>
+    </div>
+  </div>
+  <div class="rxn-box">
+    <h4>깁스 자유 에너지와 전기화학 에너지의 관계</h4>
+    <p style="font-family:monospace;font-size:.9rem;color:var(--accent3);line-height:2;">
+      ΔG = ΔH − TΔS<br>
+      ΔG = −E · F · n<br>
+      E° = −ΔG / (nF)
+    </p>
+    <p style="font-size:.82rem;color:var(--muted);margin-top:8px;">
+      F = 패러데이 상수 = 96,485 C/mol (전자 1 mol의 전하량)<br>
+      예) H₂ + ½O₂ → H₂O : ΔG = −237 kJ/mol → E° = 1.23 V<br>
+      깁스 자유 에너지 변화량을 전압으로 변환 가능.
+    </p>
+  </div>
+
+  <hr class="divider">
+  <div class="sub-heading">이론 용량 계산 예시</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🧲</div>
+      <h3>LCO (LiCoO₂) 이론 용량</h3>
+      <p>분자량: 97.871 g/mol<br>
+        전자 1 mol 전하량: 96,485 C/mol = 26.8 Ah/mol</p>
+      <div class="formula">이론 용량 ≈ 274 mAh/g</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⬛</div>
+      <h3>흑연 (Graphite) 이론 용량</h3>
+      <p>분자량: 72 g/mol (C₆ 기준)<br>
+        1 mol Li⁺ 삽입 시 전자 1 mol 이동</p>
+      <div class="formula">이론 용량 = 372 mAh/g</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 5: 역사 연대기
+════════════════════════════════════════════════ -->
+<div id="역사" class="section">
+  <div class="section-title">이차전지 역사 연대기</div>
+  <div class="section-sub">1780년부터 현재까지 — 전지 기술의 흐름</div>
+
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-year">1780</div>
+        <div class="tl-title">🐸 갈바니의 개구리 실험</div>
+        <div class="tl-desc">이탈리아 볼로냐대 루이지 갈바니(Luigi Galvani) 교수가 개구리 해부 실험에서 금속 접촉 시 다리가 경련하는 현상 관찰. "동물전기" 개념 제시. 이후 볼타가 이에 의문을 품고 연구함.</div>
+      </div>
+    </div>
+
+    <div class="tl-item key">
+      <div class="tl-card">
+        <div class="tl-year">1800</div>
+        <div class="tl-title">⚡ 볼타전지 발명 — 최초의 전지</div>
+        <div class="tl-desc">이탈리아 알렉산드로 볼타(Alessandro Volta)가 구리-아연 일차전지 발명. 구리 원반 + 산 용액을 적신 헝겊 + 아연 원반을 교대로 쌓아 제조. 현재 전압 단위 볼트(V)가 그의 이름에서 유래.</div>
+        <span class="tag tag-blue">일차전지</span>
+        <span class="tag tag-green">전압 단위 V</span>
+      </div>
+    </div>
+
+    <div class="tl-item key">
+      <div class="tl-card">
+        <div class="tl-year">1859</div>
+        <div class="tl-title">🔋 납축전지 — 최초의 이차전지</div>
+        <div class="tl-desc">프랑스 물리학자 가스통 플랑테(Gaston Planté)가 발명. 납(Pb)과 황산(H₂SO₄)의 전기화학 반응 이용. 최초의 충전 가능 전지. 셀당 전압 약 2V. 현재도 자동차용 배터리로 사용 (12V = 2V × 6셀).</div>
+        <span class="tag tag-orange">이차전지 최초</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-year">1899</div>
+        <div class="tl-title">🇸🇪 니켈카드뮴전지 (NiCd) 발명</div>
+        <div class="tl-desc">스웨덴의 발데마르 융너(Waldemar Jungner)가 발명. 양극: NiOOH, 음극: Cd, 전해질: KOH. 1906년 스웨덴에 공장 설립. 1980년대부터 대중화. 에너지 밀도 40~60 Wh/kg. 카드뮴 독성 문제 있음.</div>
+        <span class="tag tag-purple">휴대용 이차전지 시작</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-year">1967</div>
+        <div class="tl-title">🧪 니켈수소전지 (Ni-MH) 개발 시작</div>
+        <div class="tl-desc">바텔제네바연구센터에서 개발 시작. 수소저장 합금을 음극으로 사용. NiCd 대비 에너지 밀도 약 2배. 저온 특성 우수, 급속 충전 가능. 세계 최초 하이브리드차 도요타 프리우스에 채택. 1989년 상용화.</div>
+        <span class="tag tag-blue">에너지밀도 향상</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-year">1972</div>
+        <div class="tl-title">🛢️ 휘팅엄, 엑손(Exxon) 입사</div>
+        <div class="tl-desc">유가 위기로 석유회사 엑손이 대체에너지 연구 투자. 스탠리 휘팅엄(Stanley Whittingham)이 합류. TiS₂(이황화티타늄)의 층상구조에 Li⁺을 저장하는 원리 발견 → 최초 기능적 리튬 배터리 개발 (구동전압 2V 미만). 덴드라이트 문제로 개발 중단.</div>
+        <span class="tag tag-orange">1단계: 휘팅엄</span>
+      </div>
+    </div>
+
+    <div class="tl-item key">
+      <div class="tl-card">
+        <div class="tl-year">1980</div>
+        <div class="tl-title">⚗️ 구디너프, LiCoO₂ 양극 개발</div>
+        <div class="tl-desc">영국 옥스퍼드대 존 구디너프(John Goodenough) 교수가 금속 황화물 대신 금속 산화물을 양극 소재로 사용. 리튬코발트산화물(LiCoO₂)로 4V급 고전압 양극 개발 발표. 에너지 밀도를 두 배로 향상. "충전된 상태가 아니라 나중에 충전할 수 있다"는 개념 확립.</div>
+        <span class="tag tag-green">2단계: 구디너프</span>
+        <span class="tag tag-blue">4V 고전압</span>
+      </div>
+    </div>
+
+    <div class="tl-item key">
+      <div class="tl-card">
+        <div class="tl-year">1985</div>
+        <div class="tl-title">🏭 요시노, 최초 상용 가능 LIB 개발</div>
+        <div class="tl-desc">일본 요시노 아키라(Yoshino Akira) 박사가 구디너프의 LiCoO₂ 양극 + 석유 코크(후에 흑연) 음극 조합으로 안정적·경량·고용량·4V 구동 이차전지 개발. 순수 리튬 금속 없이 리튬 이온만 사용 → "리튬이차전지"에서 "리튬이온전지"로 명칭 변경.</div>
+        <span class="tag tag-purple">3단계: 요시노</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-year">1986</div>
+        <div class="tl-title">🔨 안전성 테스트 통과 — LIB의 탄생 순간</div>
+        <div class="tl-desc">요시노 박사가 큰 철 조각을 배터리 위에 떨어뜨리는 안전 테스트에서 아무 이상 없음을 확인. 요시노 본인이 "이 순간이 리튬이온전지가 탄생한 순간"이라고 진술.</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-year">1989</div>
+        <div class="tl-title">🚗 Ni-MH 전지 상용화</div>
+        <div class="tl-desc">니켈수소전지 최초 상용화. 이후 초창기 전기자동차 및 하이브리드차에 적용. 세계 최초 하이브리드차 도요타 프리우스(1997)에 탑재.</div>
+      </div>
+    </div>
+
+    <div class="tl-item key">
+      <div class="tl-card">
+        <div class="tl-year">1991</div>
+        <div class="tl-title">📱 리튬이온전지 최초 상용화</div>
+        <div class="tl-desc">LiCoO₂ 양극 + 흑연 음극 구성의 리튬이온전지가 처음으로 상용화(소니). 충·방전 시 리튬이온의 삽입/탈리(인터칼레이션) 반응. 흔들의자(Rocking Chair)형 전지라고도 불림. 이후 모바일 기기 혁명의 핵심 동력.</div>
+        <span class="tag tag-blue">상용화</span>
+        <span class="tag tag-green">무선 혁명 시작</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-year">2000년대~</div>
+        <div class="tl-title">🚘 전기자동차 시대 개막</div>
+        <div class="tl-desc">LIB 기술이 모바일 전자기기(휴대폰·태블릿·노트북)에서 전기자전거, 전동킥보드, EV로 확장. 테슬라 배터리팩(68 kWh) = 18650 셀 약 6,300개. 에너지 밀도 목표: Egrav &gt; 400 Wh/kg.</div>
+      </div>
+    </div>
+
+    <div class="tl-item nobel">
+      <div class="tl-card">
+        <div class="tl-year">2019</div>
+        <div class="tl-title">🏆 노벨화학상 — 리튬이온전지</div>
+        <div class="tl-desc">휘팅엄(Whittingham) · 구디너프(Goodenough) · 요시노 아키라(Yoshino Akira) 공동 수상. "화석 연료 없는 사회를 위한 필수 기술"로 평가. 리튬이온전지 개발에 기여한 세 과학자의 업적 인정.</div>
+        <span class="tag tag-orange">🏅 노벨화학상</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 6: 이차전지 비교
+════════════════════════════════════════════════ -->
+<div id="비교" class="section">
+  <div class="section-title">주요 이차전지 비교</div>
+  <div class="section-sub">납축전지 → NiCd → Ni-MH → 리튬이온전지</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>전지</th>
+          <th>발명 연도</th>
+          <th>양극</th>
+          <th>음극</th>
+          <th>전해질</th>
+          <th>전압</th>
+          <th>에너지밀도</th>
+          <th>특징</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="dot dot-orange"></span><b>납축전지</b></td>
+          <td>1859</td>
+          <td>PbO₂</td>
+          <td>Pb</td>
+          <td>H₂SO₄</td>
+          <td>2V/셀</td>
+          <td>낮음</td>
+          <td>자동차 시동용. 저렴하나 무거움. 납 환경문제.</td>
+        </tr>
+        <tr>
+          <td><span class="dot dot-purple"></span><b>NiCd</b></td>
+          <td>1899</td>
+          <td>NiOOH</td>
+          <td>Cd</td>
+          <td>KOH</td>
+          <td>1.2V</td>
+          <td>40~60 Wh/kg</td>
+          <td>전압 안정적. 카드뮴 독성 문제. 메모리 효과.</td>
+        </tr>
+        <tr>
+          <td><span class="dot dot-blue"></span><b>Ni-MH</b></td>
+          <td>1989</td>
+          <td>NiOOH</td>
+          <td>수소저장합금</td>
+          <td>KOH</td>
+          <td>1.2V</td>
+          <td>60~120 Wh/kg</td>
+          <td>NiCd 대비 2배 에너지밀도. 하이브리드차(프리우스). 자가방전 단점.</td>
+        </tr>
+        <tr>
+          <td><span class="dot dot-green"></span><b>리튬이온(LIB)</b></td>
+          <td>1991</td>
+          <td>LiCoO₂ 계열</td>
+          <td>흑연</td>
+          <td>유기 전해질</td>
+          <td>3.6~4.2V</td>
+          <td>~260 Wh/kg</td>
+          <td>높은 전압·에너지밀도. 모바일·EV 표준. 덴드라이트 주의.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+  <div class="sub-heading">LIB 형태별 분류</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">🔵</div>
+      <h3>원통형 (Cylindrical)</h3>
+      <p>18650, 21700 셀 형태. 구조적 안정성 높음. 테슬라 배터리팩에 수천 개 배열.</p>
+      <span class="tag tag-blue">18650 · 21700</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">⬜</div>
+      <h3>각형 (Prismatic)</h3>
+      <p>직사각형 케이스. 공간 효율 높음. 전기차·ESS에 주로 사용.</p>
+      <span class="tag tag-green">EV · ESS</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">📋</div>
+      <h3>파우치형 (Pouch)</h3>
+      <p>알루미늄 파우치 포장. 얇고 가벼움. 스마트폰·웨어러블 기기에 적합.</p>
+      <span class="tag tag-purple">모바일 기기</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="sub-heading">납축전지 반응식</div>
+  <div class="rxn-box">
+    <h4>납축전지 (Lead-Acid Battery)</h4>
+    <div class="rxn-row">
+      <div class="rxn-half ox">
+        <div class="rxn-label">음극판 · 산화 (방전)</div>
+        Pb + H₂SO₄ → PbSO₄ + 2H⁺ + 2e⁻
+      </div>
+      <div class="rxn-half re">
+        <div class="rxn-label">양극판 · 환원 (방전)</div>
+        PbO₂ + H₂SO₄ + 2H⁺ + 2e⁻ → PbSO₄ + 2H₂O
+      </div>
+    </div>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:8px;">
+      충전 시: 역반응 진행 (전해셀 원리). 자동차용 12V = 2V × 6셀 직렬 연결.
+    </p>
+  </div>
+
+  <div class="rxn-box">
+    <h4>니켈카드뮴(NiCd) 반응식 — 방전</h4>
+    <div class="rxn-row">
+      <div class="rxn-half ox">
+        <div class="rxn-label">음극 · 산화</div>
+        Cd + 2OH⁻ → Cd(OH)₂ + 2e⁻
+      </div>
+      <div class="rxn-half re">
+        <div class="rxn-label">양극 · 환원</div>
+        2NiO(OH) + 2H₂O + 2e⁻ → 2Ni(OH)₂ + 2OH⁻
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function show(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function toggle(head) {
+    const body = head.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open');
+    head.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
